@@ -212,7 +212,7 @@ The code supports interface with the [Taobao User Behavior Dataset](https://tian
        ```
     - Run preprocessing to create processed files (*taobao_train_t20.npz* *taobao_val_t20.npz* *train.npz* *val.npz*)
        ```
-       python ./tbsm_processing.sh
+       ./tbsm_processing.sh
        ```
 
 Running Baseline - CPU
