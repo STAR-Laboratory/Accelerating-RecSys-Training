@@ -5,7 +5,7 @@
 # This source code is licensed under the MIT license found in the
 # LICENSE file in the root directory of this source tree.
 
-tbsm_py="python tbsm_hotshot.py "
+tbsm_py="python tbsm_fae.py "
 
 $tbsm_py  --use-gpu  --mode="train"  --dlrm-path=./dlrm --datatype="taobao" \
 --model-type="tsl" --tsl-inner="def"  --tsl-num-heads=1 \

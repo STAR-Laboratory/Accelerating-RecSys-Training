@@ -95,12 +95,12 @@ Baseline can be run CPU_GPU using following script
      ./run_dlrm_baseline_cpu_gpu.sh
 ```
 
-Running Hotshot
----------------
+Running FAE
+-----------
 
-Hotshot can be run only on CPU_GPU using following script
+FAE can be run only on CPU_GPU using following script
 ```
-     ./run_dlrm_hotshot.sh
+     ./run_dlrm_fae.sh
 ```
 
 
@@ -231,12 +231,12 @@ Baseline can be run CPU_GPU using following script
      ./run_tbsm_baseline_cpu_gpu.sh
 ```
 
-Running Hotshot
----------------
+Running FAE
+-----------
 
-Hotshot can be run only on CPU_GPU using following script
+FAE can be run only on CPU_GPU using following script
 ```
-     ./run_tbsm_hotshot.sh
+     ./run_tbsm_fae.sh
 ```
 
 Requirements
