@@ -1,8 +1,0 @@
-@inproceedings{adnan2022hotembeddings,
-  title = {High-Performance Training by Exploiting Hot-Embeddings in Recommendation Systems},
-  author = {Adnan, Muhammad and Maboud, Yassaman and Mahajan, Divya and Nair, Prashant J.},
-  booktitle = {Proceedings of the 48th International Conference on Very Large Data Bases (VLDB)},
-  doi = {10.14778/3485450.3485462},
-  issn = {2150-8097},
-  year = {2022},
-}
