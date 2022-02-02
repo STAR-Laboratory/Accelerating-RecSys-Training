@@ -1,0 +1,16 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+- family-names: "Adnan"
+  given-names: "Muhammad"
+- family-names: "Maboud"
+  given-names: "Yassaman"
+- family-names: "Mahajan"
+  given-names: "Divya"
+- family-names: "Nair"
+  given-names: "Prashant"
+title: "Accelerating-RecSys-Training"
+version: 1.0.0
+doi: 10.14778/3485450.3485462
+date-released: 2021-05-01
+url: "https://github.com/STAR-Laboratory/Accelerating-RecSys-Training"
