@@ -1,5 +1,11 @@
-# Accelerating RecSys Training
-Accelerating Recommender model training by leveraging popular choices
+# Accelerating Recommendation System Training by Leveraging Popular Choices
+This repository contains the source code implementation of the following
+paper:
+- "[Accelerating Recommendation System Training by Leveraging Popular Choices](https://www.vldb.org/pvldb/vol15/p127-mahajan.pdf)",
+  appeared at PVLDB. Vol.15 .
+
+This source code is available
+under the [MIT License](LICENSE.txt).
 
 DLRM:
 -----
