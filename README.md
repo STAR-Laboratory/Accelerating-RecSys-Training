@@ -1,11 +1,5 @@
-# Accelerating Recommendation System Training by Leveraging Popular Choices
-This repository contains the source code implementation of the following
-paper:
-- "[Accelerating Recommendation System Training by Leveraging Popular Choices](https://www.vldb.org/pvldb/vol15/p127-mahajan.pdf)",
-  appeared at PVLDB. Vol.15 .
-
-This source code is available
-under the [MIT License](LICENSE.txt).
+# Accelerating RecSys Training
+Accelerating Recommender model training by leveraging popular choices
 
 DLRM:
 -----
@@ -84,6 +78,16 @@ Dataset Pre-processing
     ```
       ./bench/dlrm_s_criteo_terabyte.sh
     ```
+
+FAE Profiling
+-------------
+
+FAE profiler profiles the highly accessed embeddings based on defined input sampling rate and available GPU memory.
+It segregates the data into hot and cold data and save respective segregated data in ./input/hot_cold folder along with respective embedding dictionary.
+FAE profiling of data into hot and cold can be run on CPU only using following script
+```
+     ./run_fae_profiler.sh
+```
 
 Running Baseline - CPU
 ----------------------
@@ -220,6 +224,16 @@ The code supports interface with the [Taobao User Behavior Dataset](https://tian
        ```
        ./tbsm_processing.sh
        ```
+
+FAE Profiling
+-------------
+
+FAE profiler profiles the highly accessed embeddings based on defined input sampling rate and available GPU memory.
+It segregates the data into hot and cold data and save respective segregated data in ./data/taobao_hot_cold folder along with respective embedding dictionary.
+FAE profiling of data into hot and cold can be run on CPU only using following script
+```
+     ./run_fae_profiler.sh
+```
 
 Running Baseline - CPU
 ----------------------
