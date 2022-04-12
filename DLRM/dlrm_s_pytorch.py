@@ -539,6 +539,8 @@ if __name__ == "__main__":
 		train_data, train_ld = dp.make_random_data_and_loader(args, ln_emb, m_den)
 		nbatches = args.num_batches if args.num_batches > 0 else len(train_ld)
 
+	sys.exit("Data pre-processing completed!!")
+
 	### parse command line arguments ###
 	m_spa = args.arch_sparse_feature_size
 	num_fea = ln_emb.size + 1  # num sparse + num dense features
