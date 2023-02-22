@@ -384,162 +384,59 @@ class DLRM_Net(nn.Module):
 
 		return R
 
-	def forward(self, dense_x, lS_o, lS_i, data):
-				
+	def forward(self, dense_x, lS_o, lS_i, data):			
 		if data == "hot":
-			return self.parallel_forward(dense_x, lS_o, lS_i)
+			return self.sequential_forward_hot(dense_x, lS_o, lS_i)
 		else:
-			return self.mixed_forward(dense_x, lS_o, lS_i)
+			return self.sequential_forward(dense_x, lS_o, lS_i)
 
-	def mixed_forward(self, dense_x, lS_o, lS_i):	
-		# Process dense features on GPU in a data parallel fashion
-		### prepare model (overwrite) ###
-		# WARNING: # of devices must be >= batch size in parallel_forward call
-		batch_size = dense_x.size()[0]
-		ndevices = min(self.ndevices, batch_size, len(self.emb_l))
-		device_ids = range(ndevices)
-		# WARNING: must redistribute the model if mini-batch size changes(this is common
-		# for last mini-batch, when # of elements in the dataset/batch size is not even
-		if self.parallel_model_batch_size != batch_size:
-			self.parallel_model_is_not_prepared = True
+	def sequential_forward(self, dense_x, lS_o, lS_i):
+		# process dense features (using bottom mlp), resulting in a row vector
+		x = self.apply_mlp(dense_x, self.bot_l)
 
-		if self.parallel_model_is_not_prepared or self.sync_dense_params:
-			# replicate mlp (data parallelism)
-			self.bot_l_replicas = replicate(self.bot_l, device_ids)
-			self.top_l_replicas = replicate(self.top_l, device_ids)
-			self.parallel_model_batch_size = batch_size
-
-
-		### prepare input (overwrite) ###
-		# scatter dense features (data parallelism)
-		# print(dense_x.device)
-		dense_x = scatter(dense_x, device_ids, dim=0)
-
-		x = parallel_apply(self.bot_l_replicas, dense_x, None, device_ids)
-
-		# process sparse features(using embeddings) on CPU, resulting in a list of row vectors
+		# process sparse features(using embeddings), resulting in a list of row vectors
 		ly = self.apply_emb(lS_o, lS_i, self.emb_l)
-		# for y in ly:
-		#     print(y.detach().cpu().numpy())
-
 		ly = torch.stack(ly)
 
-		# scattering ly across GPU's
+		# Moving ly across GPU
 		ly = ly.to("cuda:0")
-		t_list = []
-		for k, _ in enumerate(self.emb_l):
-			y = scatter(ly[k], device_ids, dim=0)
-			t_list.append(y)
-		# adjust the list to be ordered per device
-		ly = list(map(lambda y: list(y), zip(*t_list)))
-		
-		# interactions
-		z = []
-		for k in range(ndevices):
-			zk = self.interact_features(x[k], ly[k])
-			z.append(zk)
-		# debug prints
-		# print(z)
+		ly = list(ly)
 
-		# top mlp
-		# WARNING: Note that the self.top_l is a list of top mlp modules that
-		# have been replicated across devices, while z is a list of interaction results
-		# that by construction are scattered across devices on the first (batch) dim.
-		# The output is a list of tensors scattered across devices according to the
-		# distribution of z.
-		p = parallel_apply(self.top_l_replicas, z, None, device_ids)
+		# interact features (dense and sparse)
+		z = self.interact_features(x, ly)
 
-		### gather the distributed results ###
-		p0 = gather(p, self.output_d, dim=0)
+		# obtain probability of a click (using top mlp)
+		p = self.apply_mlp(z, self.top_l)
 
 		# clamp output if needed
 		if 0.0 < self.loss_threshold and self.loss_threshold < 1.0:
-			z0 = torch.clamp(
-				p0, min=self.loss_threshold, max=(1.0 - self.loss_threshold)
-			)
+			z = torch.clamp(p, min=self.loss_threshold, max=(1.0 - self.loss_threshold))
 		else:
-			z0 = p0
+			z = p
 
-		return z0
+		return z
 
-	def parallel_forward(self, dense_x, lS_o, lS_i):
-		### prepare model (overwrite) ###
-		# WARNING: # of devices must be >= batch size in parallel_forward call
-		batch_size = dense_x.size()[0]
-		ndevices = min(self.ndevices, batch_size)
-		device_ids = range(ndevices)
-		# WARNING: must redistribute the model if mini-batch size changes(this is common
-		# for last mini-batch, when # of elements in the dataset/batch size is not even
-		if self.parallel_model_batch_size != batch_size:
-			self.parallel_model_is_not_prepared = True
-		
-		if self.parallel_model_is_not_prepared or self.sync_dense_params:
-			# replicate mlp (data parallelism)
-			self.bot_l_replicas = replicate(self.bot_l, device_ids)
-			self.top_l_replicas = replicate(self.top_l, device_ids)
-			self.hot_emb_l_replicas = replicate(self.hot_emb_l, device_ids)
-			self.parallel_model_batch_size = batch_size
+	def sequential_forward_hot(self, dense_x, lS_o, lS_i):
+		# process dense features (using bottom mlp), resulting in a row vector
+		x = self.apply_mlp(dense_x, self.bot_l)
 
-		
-		# scatter dense features (data parallelism)
-		# print(dense_x.device)
+		# process sparse features(using embeddings), resulting in a list of row vectors
+		ly = self.apply_hot_emb(lS_o, lS_i, self.hot_emb_l)
 
-		dense_x = scatter(dense_x, device_ids, dim=0)
+		# interact features (dense and sparse)
+		z = self.interact_features(x, ly)
+		# print(z.detach().cpu().numpy())
 
-		lS_i = scatter(lS_i, device_ids, dim=1)
-		lS_o = scatter(lS_o, device_ids, dim=1)
-		lS_o_t = lS_o[0]
-		lS_o = []
-		for i in range(ndevices):
-			lS_o.append(lS_o_t.to("cuda:"+str(i)))
+		# obtain probability of a click (using top mlp)
+		p = self.apply_mlp(z, self.top_l)
 
-		### compute results in parallel ###
-		# bottom mlp
-		# WARNING: Note that the self.bot_l is a list of bottom mlp modules
-		# that have been replicated across devices, while dense_x is a tuple of dense
-		# inputs that has been scattered across devices on the first (batch) dimension.
-		# The output is a list of tensors scattered across devices according to the
-		# distribution of dense_x.
-		x = parallel_apply(self.bot_l_replicas, dense_x, None, device_ids)
-		# debug prints
-		# print(x)
-
-		
-		# embeddings
-		ly = []
-		
-		for i in range(ndevices):
-			y = self.apply_hot_emb(lS_o[i], lS_i[i], self.hot_emb_l_replicas[i])
-			ly.append(y)
-
-		# interactions
-		z = []
-		for k in range(ndevices):
-			zk = self.interact_features(x[k], ly[k])
-			z.append(zk)
-		# debug prints
-		# print(z)
-		
-		# top mlp
-		# WARNING: Note that the self.top_l is a list of top mlp modules that
-		# have been replicated across devices, while z is a list of interaction results
-		# that by construction are scattered across devices on the first (batch) dim.
-		# The output is a list of tensors scattered across devices according to the
-		# distribution of z.
-		p = parallel_apply(self.top_l_replicas, z, None, device_ids)
-
-		### gather the distributed results ###
-		p0 = gather(p, self.output_d, dim=0)
-			
 		# clamp output if needed
 		if 0.0 < self.loss_threshold and self.loss_threshold < 1.0:
-			z0 = torch.clamp(
-				p0, min=self.loss_threshold, max=(1.0 - self.loss_threshold)
-			)
+			z = torch.clamp(p, min=self.loss_threshold, max=(1.0 - self.loss_threshold))
 		else:
-			z0 = p0
+			z = p
 
-		return z0
+		return z
 
 def dash_separated_ints(value):
 	vals = value.split('-')
