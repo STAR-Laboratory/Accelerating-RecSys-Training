@@ -789,8 +789,8 @@ if __name__ == "__main__":
 
 	ax.plot(total_access[:,0], sorted_emb, label = 'Original Data', linewidth = 0.5, color = 'b')
 	#ax.plot(sample_access[:,0], sorted_emb_sample, label = 'Sampled Data', linewidth = 0.5, color = 'g')
-
-	ax.set_yscale('log', base = 10)
-	plt.xlabel('Indices', fontsize = 30)
-	plt.ylabel('Number of Accesses\n(log scale)', fontsize = 30)
+	plt.legend(fontsize = 14, ncol = 2, loc = "upper right", frameon = True, edgecolor='black')
+	ax.set_yscale('log')
+	plt.xlabel('Indices', fontsize = 16)
+	plt.ylabel('Number of Accesses\n(log scale)', fontsize = 16)
 	plt.savefig("access_freq.png", dpi=200, format='png', bbox_inches='tight')
