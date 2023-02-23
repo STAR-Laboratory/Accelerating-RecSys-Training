@@ -492,6 +492,8 @@ if __name__ == "__main__":
 	parser.add_argument("--lr-num-warmup-steps", type=int, default=0)
 	parser.add_argument("--lr-decay-start-step", type=int, default=0)
 	parser.add_argument("--lr-num-decay-steps", type=int, default=0)
+	# Embedding Access Characterization
+	parser.add_argument("--emb-characterization", type=int, default=0)
 	args = parser.parse_args()
 
 	if args.mlperf_logging:
@@ -743,12 +745,12 @@ if __name__ == "__main__":
 			torch.cuda.synchronize()
 		return time.time()
 
-	# =============================== SAMPLING FOR BIGGEST EMB TABLE - EMB[2] ======================================
+	# =============================== SAMPLING FOR BIGGEST EMB TABLE - EMB[args.emb_characterization] ======================================
 			
 	print("Train data length : ", len(train))
 			
-	total_access = np.zeros((ln_emb[9],2), dtype = int)
-	sample_access = np.zeros((ln_emb[9],2), dtype = int)
+	total_access = np.zeros((ln_emb[int(args.emb_characterization)],2), dtype = int)
+	sample_access = np.zeros((ln_emb[int(args.emb_characterization)],2), dtype = int)
 
 	# =================== Filling Skew Table ======================
 	for i in range(len(total_access)):
@@ -756,7 +758,7 @@ if __name__ == "__main__":
 		sample_access[i][0] = i
 
 	for i, (X, lS_i, T) in enumerate(train):
-		lS_i_index = lS_i[9]
+		lS_i_index = lS_i[int(args.emb_characterization)]
 		total_access[int(lS_i_index)][1] = total_access[int(lS_i_index)][1] + 1
 
 	seeds = np.random.randint(0, len(train), size = int(0.05 * len(train)))
@@ -764,7 +766,7 @@ if __name__ == "__main__":
 
 	for i, seed in enumerate(seeds):
 		X, lS_i, T = train[seed]
-		lS_i_index = lS_i[9]
+		lS_i_index = lS_i[args.emb_characterization]
 		sample_access[int(lS_i_index)][1] = sample_access[int(lS_i_index)][1] + 1
 				
 	#indices = []
@@ -793,4 +795,4 @@ if __name__ == "__main__":
 	ax.set_yscale('log')
 	plt.xlabel('Indices', fontsize = 16)
 	plt.ylabel('Number of Accesses\n(log scale)', fontsize = 16)
-	plt.savefig("access_freq.png", dpi=200, format='png', bbox_inches='tight')
+	plt.savefig("./input/kaggle/access_freq.png", dpi=200, format='png', bbox_inches='tight')

@@ -5,8 +5,4 @@ python dlrm_access_freq.py --arch-sparse-feature-size=16 \
 								--data-generation=dataset \
 								--data-set=kaggle_tutorial \
 								--processed-data-file-tutorial=./input/kaggle/train.npz \
-								--loss-function=bce \
-								--round-targets=True \
-								--mini-batch-size=1024 \
-								--print-freq=10 \
-								--print-time
+								--emb-characterization=2
