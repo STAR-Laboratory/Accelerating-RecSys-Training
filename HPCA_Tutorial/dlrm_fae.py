@@ -1063,15 +1063,15 @@ if __name__ == "__main__":
 
 				str_run_type = "inference" if args.inference_only else "training"
 
-				print("Forward ", gForward, " ms")
-				print("Backward ", gBackward, " ms")
-				print("Optimizer ", gOptimizer, " ms")
+				print("Forward ", round(gForward,3), " ms")
+				print("Backward ", round(gBackward,3), " ms")
+				print("Optimizer ", round(gOptimizer,3), " ms")
 				print("Epoch ", k)
 				print("Iteration ", itr_ctr)
 				print("Total_Iterations ", nbatches)
-				print("Iteration_time ", gT, " ms")
-				print("Loss ", gL)
-				print("Accuracy ", gA*100)
+				print("Iteration_time ", round(gT,3), " ms")
+				print("Loss ", round(gL,3))
+				print("Accuracy ", round(gA*100,3))
 				print("Train_data ", data)
 				print("\n")
 
@@ -1386,15 +1386,15 @@ if __name__ == "__main__":
 
 					str_run_type = "inference" if args.inference_only else "training"
 
-					print("Forward ", gForward, " ms")
-					print("Backward ", gBackward, " ms")
-					print("Optimizer ", gOptimizer, " ms")
+					print("Forward ", round(gForward,3), " ms")
+					print("Backward ", round(gBackward,3), " ms")
+					print("Optimizer ", round(gOptimizer,3), " ms")
 					print("Epoch ", k)
 					print("Iteration ", itr_ctr)
 					print("Total_Iterations ", nbatches)
-					print("Iteration_time ", gT, " ms")
-					print("Loss ", gL)
-					print("Accuracy ", gA*100)
+					print("Iteration_time ", round(gT,3), " ms")
+					print("Loss ", round(gL,3))
+					print("Accuracy ", round(gA*100,3))
 					print("Train_data ", data)
 					print("\n")
 
@@ -1600,15 +1600,15 @@ if __name__ == "__main__":
 
 		k += 1  # nepochs
 
-	print("Fwd_cold_Time ", forward_cold_time, " s")
-	print("Bwd_cold_Time ", backward_cold_time, " s")
-	print("Opt_cold_Time ", optimizer_cold_time, " s")
-	print("Fwd_hot_Time ", forward_hot_time, " s")
-	print("Bwd_hot_Time ", backward_hot_time, " s")
-	print("Opt_hot_Time ", optimizer_hot_time, " s")
-	print("Total_Fwd_Time ", total_forward_time, " s")
-	print("Total_Bwd_Time ", total_backward_time, " s")
-	print("Total_Opt_Time ", total_optimizer_time, " s")
+	print("Fwd_cold_Time ", round(forward_cold_time,3), " s")
+	print("Bwd_cold_Time ", round(backward_cold_time,3), " s")
+	print("Opt_cold_Time ", round(optimizer_cold_time,3), " s")
+	print("Fwd_hot_Time ", round(forward_hot_time,3), " s")
+	print("Bwd_hot_Time ", round(backward_hot_time,3), " s")
+	print("Opt_hot_Time ", round(optimizer_hot_time,3), " s")
+	print("Total_Fwd_Time ", round(total_forward_time,3), " s")
+	print("Total_Bwd_Time ", round(total_backward_time,3), " s")
+	print("Total_Opt_Time ", round(total_optimizer_time,3), " s")
 
 	# profiling
 	if args.enable_profiling:

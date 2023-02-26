@@ -950,15 +950,15 @@ if __name__ == "__main__":
 
 				str_run_type = "inference" if args.inference_only else "training"
 
-				print("Forward ", gForward, " ms")
-				print("Backward ", gBackward, " ms")
-				print("Optimizer ", gOptimizer, " ms")
+				print("Forward ", round(gForward,3), " ms")
+				print("Backward ", round(gBackward,3), " ms")
+				print("Optimizer ", round(gOptimizer,3), " ms")
 				print("Epoch ", k)
 				print("Iteration ", j+1)
 				print("Total_Iterations ", nbatches)
-				print("Iteration_time ", gT, " ms")
-				print("Loss ", gL)
-				print("Accuracy ", gA*100)
+				print("Iteration_time ", round(gT,3), " ms")
+				print("Loss ", round(gL,3))
+				print("Accuracy ", round(gA*100,3))
 				print("\n")
 
 				# Uncomment the line below to print out the total time with overhead
@@ -1148,9 +1148,9 @@ if __name__ == "__main__":
 
 		k += 1  # nepochs
 	
-	print("Total_Fwd_Time ", total_forward_time, " s")
-	print("Total_Bwd_Time ", total_backward_time, " s")
-	print("Total_Opt_Time ", total_optimizer_time, " s")
+	print("Total_Fwd_Time ", round(total_forward_time,3), " s")
+	print("Total_Bwd_Time ", round(total_backward_time,3), " s")
+	print("Total_Opt_Time ", round(total_optimizer_time,3), " s")
 
 	# profiling
 	if args.enable_profiling:
