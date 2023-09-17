@@ -1,6 +1,11 @@
 # Accelerating RecSys Training
 Accelerating Recommender model training by leveraging popular choices
 
+<img src="img/FAE.png" alt="FAE" style="width:500px;display:block;margin-left:auto;margin-right:auto;"/><br>
+<div style="text-align: center; margin: 20pt">
+  <figcaption style="font-style: italic;"></figcaption>
+</div>
+
 DLRM:
 -----
 An implementation of a deep learning recommendation model (DLRM)
@@ -83,7 +88,7 @@ FAE Profiling
 -------------
 
 FAE profiler profiles the highly accessed embeddings based on defined input sampling rate and available GPU memory.
-It segregates the data into hot and cold data and save respective segregated data in ./input/hot_cold folder along with respective embedding dictionary.
+It segregates the data into hot and cold data and save respective segregated data in ./input/<dataset>/<hot_cold_dataset> folder along with respective embedding dictionary.
 FAE profiling of data into hot and cold can be run on CPU only using following script
 ```
      ./run_fae_profiler.sh
@@ -261,7 +266,7 @@ FAE can be run only on CPU_GPU using following script
 
 Requirements
 ------------
-pytorch-nightly (*7/30/20*)
+pytorch-nightly
 
 scikit-learn
 

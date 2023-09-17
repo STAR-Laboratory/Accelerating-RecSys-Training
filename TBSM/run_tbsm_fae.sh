@@ -16,9 +16,9 @@ $tbsm_py  --use-gpu  --mode="train"  --dlrm-path=./dlrm --datatype="taobao" \
 --pro-train-file=./output/taobao_train_t20.npz \
 --pro-val-file=./output/taobao_val_t20.npz \
 --pro-test-file=./output/taobao_test_t20.npz \
---train-hot-file=./data/taobao_hot_cold/train_hot.npz \
---train-normal-file=./data/taobao_hot_cold/train_normal.npz \
---hot-emb-dict-file=./data/taobao_hot_cold/hot_emb_dict.npz \
+--train-hot-file=./input/taobao_hot_cold/train_hot.npz \
+--train-normal-file=./input/taobao_hot_cold/train_normal.npz \
+--hot-emb-dict-file=./input/taobao_hot_cold/hot_emb_dict.npz \
 --save-model=./output/model.pt \
 --ts-length=20 --device-num=0 --tsl-interaction-op="dot" --tsl-mechanism="mlp" --learning-rate=0.05  --arch-sparse-feature-size=16 \
 --arch-mlp-bot="1-16" --arch-mlp-top="15-15" --tsl-mlp="15-15" --arch-mlp="60-1" --print-time
