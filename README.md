@@ -1,5 +1,9 @@
-# Accelerating RecSys Training
-Accelerating Recommender model training by leveraging popular choices
+# Accelerating RecSys Training (FAE)
+
+This repository contains the source code implementation of the following
+paper:
+- "[Accelerating recommendation system training by leveraging popular choices](http://people.ece.ubc.ca/adnan/assets/pdf/FAE.pdf)",
+  which appeared at VLDB 2022.
 
 <img src="img/FAE.png" alt="FAE" style="width:500px;display:block;margin-left:auto;margin-right:auto;"/><br>
 <div style="text-align: center; margin: 20pt">
